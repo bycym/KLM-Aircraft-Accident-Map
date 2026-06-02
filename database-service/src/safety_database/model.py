@@ -24,12 +24,11 @@ class AccidentRecord(Model):
 
     event_id = UnicodeAttribute(hash_key=True)
     year = NumberAttribute()
-    
+
     year_index = YearIndex()
     location_key = UnicodeAttribute()
     latitude = NumberAttribute(null=True)
     longitude = NumberAttribute(null=True)
-
 
     event_date = UnicodeAttribute()
     location = UnicodeAttribute(null=True)

@@ -12,11 +12,10 @@ class LambdaDatabaseClient:
         self.client = boto3.client("lambda")
 
     def call(self, request: RpcRequest) -> dict[str, Any]:
-        response = self.client.invoke(FunctionName=self.function_name,
+        response = self.client.invoke(
+            FunctionName=self.function_name,
             InvocationType="RequestResponse",
-            Payload=json.dumps(
-                {"action": request.action, "payload": request.payload}
-            ).encode("utf-8"),
+            Payload=json.dumps({"action": request.action, "payload": request.payload}).encode("utf-8"),
         )
         status_code = int(response.get("StatusCode", 0))
         if status_code >= 500:

@@ -9,9 +9,8 @@ class Settings(BaseSettings):
     rpc_timeout_seconds: int = Field(default=10, alias="RPC_TIMEOUT_SECONDS")
 
     rpc_queue: str = Field(default="accident_rpc", alias="RABBITMQ_RPC_QUEUE")
-    
-    database_client: str = Field(default="rabbitmq", alias="DATABASE_CLIENT")
 
+    database_client: str = Field(default="rabbitmq", alias="DATABASE_CLIENT")
 
     database_lambda_function_name: str = Field(default="", alias="DATABASE_LAMBDA_FUNCTION_NAME")
     cache_ttl_seconds: int = 7 * 24 * 60 * 60

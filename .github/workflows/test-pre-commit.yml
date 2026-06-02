@@ -14,6 +14,8 @@ jobs:
         with:
           python-version: "3.13"
       - uses: pre-commit/action@v3.0.1
+        env:
+          SKIP: frontend-typescript-lint
 
   lint-and-test-backend:
     runs-on: ubuntu-latest

@@ -15,5 +15,5 @@ class AccidentRepository:
         return sorted({int(record.year) for record in AccidentRecord.scan()})
 
     def by_year(self, year: int) -> Iterable[AccidentRecord]:
-        #item = AccidentRecord.year_index.query(2019)
+        # item = AccidentRecord.year_index.query(2019)
         return AccidentRecord.year_index.query(year)

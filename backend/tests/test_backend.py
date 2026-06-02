@@ -1,7 +1,7 @@
 from safety_backend.settings import Settings
 from fastapi.testclient import TestClient
 
-#from fastapi.testclient import *
+# from fastapi.testclient import *
 
 from safety_backend.app import create_app
 
@@ -33,7 +33,6 @@ class FakeRpc:
     def call(self, request: RpcRequest):
         self.calls.append(request)
 
-
         if self.raises:
             raise self.raises
         return self.replies[request.action]
@@ -48,10 +47,7 @@ def test_backend_uses_redis_hit_before_rabbitmq() -> None:
     cache.set_json(YEARS_KEY, {"years": [year]})
 
     rpc = FakeRpc()
-    app = create_app(
-        settings=Settings(), 
-        cache_factory=lambda _settings: cache, rpc_client=rpc
-        )
+    app = create_app(settings=Settings(), cache_factory=lambda _settings: cache, rpc_client=rpc)
 
     response = TestClient(app).get("/years")
 

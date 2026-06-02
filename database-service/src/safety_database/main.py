@@ -8,11 +8,12 @@ from safety_database.rabbitmq import AccidentRpcHandler, RabbitConsumer
 from safety_database.repository import AccidentRepository
 from safety_database.settings import Settings
 
+
 def main() -> None:
     settings = Settings()
     if not AccidentRecord.exists():
         AccidentRecord.create_table(wait=True, billing_mode="PAY_PER_REQUEST")
-        
+
     repository = AccidentRepository()
     AccidentSeeder(repository).seed_if_empty(settings.csv_path)
     threading.Thread(target=serve_health, args=(settings.health_port,), daemon=True).start()

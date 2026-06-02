@@ -14,10 +14,9 @@ class Settings(BaseSettings):
     aws_access_key_id: str = Field(default="local", alias="AWS_ACCESS_KEY_ID")
     aws_secret_access_key: str = Field(default="local", alias="AWS_SECRET_ACCESS_KEY")
 
-
     table_name: str = Field(default="accident_records", alias="ACCIDENT_TABLE_NAME")
-    
-    #csv_path: str = "../../AviationData_SSC_case_Ranbir.csv")
+
+    # csv_path: str = "../../AviationData_SSC_case_Ranbir.csv")
     csv_path: str = Field(default="../AviationData_SSC_case_Ranbir.csv", alias="CSV_PATH")
     health_port: int = Field(default=8080, alias="PORT")
 

@@ -24,15 +24,12 @@ class RabbitRpcClient:
         self.timeout_seconds = timeout_seconds
 
     def call(self, request: RpcRequest) -> dict[str, Any]:
-        connection = pika.BlockingConnection(
-            pika.URLParameters(self.rabbitmq_url)
-            )
+        connection = pika.BlockingConnection(pika.URLParameters(self.rabbitmq_url))
 
         try:
             channel = connection.channel()
             result = channel.queue_declare(queue="", exclusive=True)
             callback_queue = result.method.queue
-            
 
             correlation_id = str(uuid.uuid4())
 
@@ -42,9 +39,7 @@ class RabbitRpcClient:
                 if props.correlation_id == correlation_id:
                     response["body"] = json.loads(body.decode("utf-8"))
 
-            channel.basic_consume(
-                queue=callback_queue, on_message_callback=on_response, auto_ack=True
-            )
+            channel.basic_consume(queue=callback_queue, on_message_callback=on_response, auto_ack=True)
             channel.basic_publish(
                 exchange="",
                 routing_key=self.queue,

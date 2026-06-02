@@ -2,7 +2,8 @@ import json
 from typing import Any
 
 import pika
-from .logger import logger 
+from .logger import logger
+
 
 class AccidentRpcHandler:
     def __init__(self, query_service) -> None:
@@ -15,10 +16,10 @@ class AccidentRpcHandler:
 
         if action == "years":
             return self.query_service.years()
-        
+
         if action == "accidents_by_year":
             return self.query_service.accidents_by_year(int(payload["year"]))
-        
+
         raise ValueError(f"unsupported action: {action}")
 
 
@@ -40,8 +41,10 @@ class RabbitConsumer:
         channel.queue_declare(
             queue=self.queue,
             durable=True,
-            arguments={"x-dead-letter-exchange": self.dlq_exchange, 
-                       "x-dead-letter-routing-key": self.queue},
+            arguments={
+                "x-dead-letter-exchange": self.dlq_exchange,
+                "x-dead-letter-routing-key": self.queue,
+            },
         )
 
     def on_message(self, channel: Any, method: Any, properties: Any, body: bytes) -> None:
@@ -65,7 +68,7 @@ class RabbitConsumer:
         logger.info("run")
         connection = pika.BlockingConnection(pika.URLParameters(self.rabbitmq_url))
         channel = connection.channel()
-        
+
         self.declare(channel)
         channel.basic_consume(queue=self.queue, on_message_callback=self.on_message)
         channel.start_consuming()

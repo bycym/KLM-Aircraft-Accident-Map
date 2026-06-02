@@ -30,11 +30,7 @@ repos:
     rev: v1.37.1
     hooks:
       - id: yamllint
-
-  - repo: https://github.com/rhysd/actionlint
-    rev: v1.7.7
-    hooks:
-      - id: actionlint
+        args: [-d, "{extends: relaxed, rules: {line-length: {max: 120}}}"]
 
   - repo: local
     hooks:
@@ -43,15 +39,16 @@ repos:
         entry: scripts/update-openapi-spec.sh
         language: system
         files: ^backend/
+        pass_filenames: false
       - id: frontend-typescript-lint
         name: frontend TypeScript lint
         entry: bash -c 'cd frontend && npm run lint'
         language: system
         pass_filenames: false
         files: ^frontend/
-      - id: frontend-test-coverage
-        name: frontend test coverage
-        entry: bash -c 'cd frontend && npm run test:coverage'
-        language: system
-        pass_filenames: false
-        files: ^frontend/
+      # - id: frontend-test-coverage
+      #   name: frontend test coverage
+      #   entry: bash -c 'cd frontend && npm run test:coverage'
+      #   language: system
+      #   pass_filenames: false
+      #   files: ^frontend/

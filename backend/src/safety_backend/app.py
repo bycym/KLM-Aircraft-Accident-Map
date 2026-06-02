@@ -1,11 +1,10 @@
-from collections.abc import Callable
 from typing import Any
 
 from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from redis import Redis
 
-from .logger import logger 
+from .logger import logger
 
 from safety_backend.cache import YEARS_KEY, AccidentCache
 from safety_backend.lambda_client import LambdaDatabaseClient
@@ -14,6 +13,7 @@ from safety_backend.models import AccidentYearResponse, ErrorResponse, YearsResp
 
 from safety_backend.rpc import RabbitRpcClient, RpcRequest, RpcTimeoutError
 from safety_backend.settings import Settings
+
 
 def create_app(
     settings: Settings | None = None,
@@ -51,17 +51,15 @@ def create_app(
         accident_cache: AccidentCache = Depends(get_cache), accident_rpc: Any = Depends(get_rpc)
     ) -> dict[str, Any]:
         logger.info("Get Years")
-        
+
         cached = accident_cache.get_json(YEARS_KEY)
         if cached is not None:
-
             return cached
-        
+
         try:
             payload = accident_rpc.call(RpcRequest(action="years", payload={}))
         except RpcTimeoutError as exc:
             raise HTTPException(
-
                 status_code=503,
                 detail={"error": "database timoeut", "detail": str(exc)},
             ) from exc
@@ -82,15 +80,12 @@ def create_app(
         cached = accident_cache.get_json(AccidentCache.accidents_key(year))
         if cached is not None:
             return cached
-        
+
         available_years = years(accident_cache, accident_rpc)["years"]
         if available_years and (year < min(available_years) or year > max(available_years)):
             raise HTTPException(
                 status_code=400,
-                detail={
-                        "error": "year_out_of_range", 
-                        "detail": "year is outside dataset range"
-                        },
+                detail={"error": "year_out_of_range", "detail": "year is outside dataset range"},
             )
         try:
             payload = accident_rpc.call(RpcRequest(action="accidents_by_year", payload={"year": year}))
@@ -100,7 +95,7 @@ def create_app(
                 status_code=503,
                 detail={"error": "database_timeout", "detail": str(exc)},
             ) from exc
-        
+
         accident_cache.set_json(AccidentCache.accidents_key(year), payload)
         return payload
 
@@ -109,8 +104,7 @@ def create_app(
 
 def _build_cache(settings: Settings) -> AccidentCache:
     logger.info("build cache")
-    return AccidentCache(Redis.from_url(settings.redis), 
-                         settings.cache_ttl_seconds)
+    return AccidentCache(Redis.from_url(settings.redis), settings.cache_ttl_seconds)
 
 
 def _build_database_client(settings: Settings) -> Any:

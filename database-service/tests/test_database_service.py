@@ -1,8 +1,6 @@
 from safety_database.lambda_handler import lambda_handler
 
 
-
-
 def test_lambda_handler_returns_json_response(monkeypatch) -> None:
     class Handler:
         def handle(self, request):

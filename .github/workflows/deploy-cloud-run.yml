@@ -58,7 +58,7 @@ jobs:
             --image $GAR_LOCATION-docker.pkg.dev/${{ inputs.project_id }}/$GAR_REPOSITORY/frontend:${{ github.sha }} \
             --region ${{ inputs.region }} \
             --allow-unauthenticated
-      
+
       - name: Deploy database-service
         run: |
           gcloud run deploy safety-database-service \

@@ -46,7 +46,7 @@ export class AppComponent implements OnInit {
       next: (response) => {
         this.response = response;
         this.loading = false;
-        
+
         this.renderMap(response.accidents);
       },
 

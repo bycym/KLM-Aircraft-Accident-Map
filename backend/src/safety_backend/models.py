@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 class ErrorResponse(BaseModel):
@@ -11,7 +11,6 @@ class YearsResponse(BaseModel):
 
 
 class AccidentPoint(BaseModel):
-
     event_id: str
     latitude: float
     longitude: float

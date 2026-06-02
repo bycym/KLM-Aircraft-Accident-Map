@@ -3,8 +3,6 @@ import re
 from collections.abc import Iterable
 from dataclasses import dataclass
 
-from .logger import logger
-
 
 @dataclass(frozen=True)
 class ParsedAccident:
@@ -29,8 +27,8 @@ class ParsedAccident:
 def normalize_location_key(location: str, country: str) -> str:
     raw = f"{country}:{location}".strip().lower()
     norm = re.sub(r"[^a-z0-9]+", "-", raw)
-    
-    #normalized = norm.strip("-").lower()
+
+    # normalized = norm.strip("-").lower()
 
     normalized = norm.strip("-")
     # logger.info(f"{normalized}")
@@ -58,17 +56,13 @@ def parse_row(row: dict[str, str]) -> ParsedAccident | None:
         event_id=event_id,
         year=int(event_date[:4]),
         location_key=normalize_location_key(location, country),
-        
         latitude=parse_coordinate(row.get("Latitude", "")),
-        longitude=parse_coordinate(
-            row.get("Longitude", "")),
+        longitude=parse_coordinate(row.get("Longitude", "")),
         event_date=event_date,
-
         location=location,
         country=country,
         injury_severity=row.get("Injury.Severity", "").strip(),
-        #aircraft_category=row.get("Category", ""),
-
+        # aircraft_category=row.get("Category", ""),
         aircraft_category=row.get("Aircraft.Category", "").strip(),
         make=row.get("Make", "").strip(),
         model=row.get("Model", "").strip(),
@@ -82,8 +76,8 @@ def read_accidents(csv_path: str) -> Iterable[ParsedAccident]:
         reader = csv.DictReader(csv_file)
         for row in reader:
             parsed = parse_row(row)
-            
-            #print(f"{parsed}")
+
+            # print(f"{parsed}")
             if parsed is not None:
                 yield parsed
 

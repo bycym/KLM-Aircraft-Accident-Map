@@ -1,4 +1,6 @@
 import json
+
+from safety_database.logger import logger
 from safety_database.query_service import AccidentQueryService
 
 from safety_database.csv_importer import AccidentSeeder
@@ -11,7 +13,6 @@ from safety_database.settings import Settings
 
 _handler: AccidentRpcHandler | None = None
 
-from .logger import logger
 
 def lambda_handler(event, _context):
     logger.info(f"lambda_hander {event=}")
@@ -19,11 +20,14 @@ def lambda_handler(event, _context):
         response = _get_handler().handle(_normalize_event(event))
 
     except Exception as exc:
-        return {"statusCode": 500, "body": json.dumps({"error": "database_error", "detail": str(exc)})}
+        return {
+            "statusCode": 500,
+            "body": json.dumps({"error": "database_error", "detail": str(exc)}),
+        }
     return {"statusCode": 200, "body": json.dumps(response)}
 
 
-def _normalize_event(event):# -> Any | Any:
+def _normalize_event(event):  # -> Any | Any:
     if "body" not in event:
         return event
     body = event["body"] or "{}"
