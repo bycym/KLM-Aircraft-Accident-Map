@@ -1,5 +1,7 @@
 # Aircraft Accident Map
 
+![Workflow Status](https://github.com/bycym/KLM-Aircraft-Accident-Map/actions/workflows/test-pre-commit.yml/badge.svg)
+
 Safety project with separate backend, database-service, frontend, and deploy artifacts.
 
 ## Commands
