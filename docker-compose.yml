@@ -1,0 +1,58 @@
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  dynamodb:
+    image: amazon/dynamodb-local:latest
+    command: "-jar DynamoDBLocal.jar -sharedDb"
+    ports:
+      - "8001:8000"
+
+  database-service:
+    build: ./database-service
+    depends_on:
+      - rabbitmq
+      - dynamodb
+    environment:
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/%2F
+      DYNAMODB_ENDPOINT_URL: http://dynamodb:8000
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: local
+      AWS_SECRET_ACCESS_KEY: local
+      CSV_PATH: /data/AviationData_SSC_case_Ranbir.csv
+      PORT: "8080"
+    volumes:
+      - ./AviationData_SSC_case_Ranbir.csv:/data/AviationData_SSC_case_Ranbir.csv:ro
+    ports:
+      - "8081:8080"
+
+  backend:
+    build:
+      context: ./backend
+      # dockerfile: Dockerfile.lambda # TODO: fix
+      dockerfile: Dockerfile
+    depends_on:
+      - redis
+      - rabbitmq
+      - database-service
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/%2F
+    ports:
+      - "9000:8080"
+      - "8000:8080"
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      - backend
+    ports:
+      - "8082:80"

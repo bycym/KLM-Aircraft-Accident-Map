@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: safety-frontend
+  namespace: safety
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: safety-frontend
+  template:
+    metadata:
+      labels:
+        app: safety-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: ghcr.io/example/safety-frontend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: safety-frontend
+  namespace: safety
+spec:
+  selector:
+    app: safety-frontend
+  ports:
+    - port: 80
+      targetPort: 80

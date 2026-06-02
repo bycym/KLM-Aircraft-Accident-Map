@@ -1,0 +1,23 @@
+<main class="shell">
+  <header class="toolbar">
+    <h1>Aircraft Accident Map</h1>
+    <label>
+      Year
+
+      <select [(ngModel)]="selectedYear" (change)="onYearChange()" aria-label="Year">
+        <option *ngFor="let year of years" [ngValue]="year">{{ year }}</option>
+      </select>
+
+
+    </label>
+  </header>
+
+  <section *ngIf="error" class="alert error" role="alert">{{ error }}</section>
+
+  <section *ngIf="hasNoMappableData" class="alert" role="status">
+    No mappable accident records for {{ selectedYear }}.
+    Total records: {{ response?.total_count }}. Unmapped records: {{ response?.unmapped_count }}.
+  </section>
+
+  <div id="map" class="map" aria-label="Accident map"></div>
+</main>

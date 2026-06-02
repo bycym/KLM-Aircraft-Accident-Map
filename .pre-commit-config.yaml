@@ -1,0 +1,57 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-toml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+
+      - id: detect-private-key
+      - id: check-executables-have-shebangs
+      - id: check-json
+      - id: check-symlinks
+      - id: check-yaml
+        args: [--multi]
+      - id: pretty-format-json
+        args: [--no-sort-keys, --autofix]
+      - id: requirements-txt-fixer
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.14
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.37.1
+    hooks:
+      - id: yamllint
+
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.7
+    hooks:
+      - id: actionlint
+
+  - repo: local
+    hooks:
+      - id: update-backend-openapi-spec
+        name: update backend OpenAPI spec
+        entry: scripts/update-openapi-spec.sh
+        language: system
+        files: ^backend/
+      - id: frontend-typescript-lint
+        name: frontend TypeScript lint
+        entry: bash -c 'cd frontend && npm run lint'
+        language: system
+        pass_filenames: false
+        files: ^frontend/
+      - id: frontend-test-coverage
+        name: frontend test coverage
+        entry: bash -c 'cd frontend && npm run test:coverage'
+        language: system
+        pass_filenames: false
+        files: ^frontend/

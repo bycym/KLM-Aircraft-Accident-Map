@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: safety-backend
+  namespace: safety
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: safety-backend
+  template:
+    metadata:
+      labels:
+        app: safety-backend
+    spec:
+      serviceAccountName: safety-backend
+      containers:
+        - name: backend
+          image: ghcr.io/example/safety-backend-lambda:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: safety-config
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: safety-backend
+  namespace: safety
+spec:
+  selector:
+    app: safety-backend
+  ports:
+    - port: 9000
+      targetPort: 8080
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: safety-backend
+  namespace: safety
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::ACCOUNT_ID:role/safety-backend-lambda-invoker
